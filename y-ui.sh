@@ -82,7 +82,7 @@ before_show_menu() {
 }
 
 install() {
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontent.com/treffen2010/y-ui/master/install.sh)
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -101,7 +101,7 @@ update() {
         fi
         return 0
     fi
-    bash <(curl -Ls https://raw.githubusercontent.com/vaxilu/x-ui/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontent.com/treffen2010/y-ui/master/install.sh)
     if [[ $? == 0 ]]; then
         echo -e "${green}更新完成，已自动重启面板${plain}"
         exit 0
@@ -116,16 +116,16 @@ uninstall() {
         fi
         return 0
     fi
-    systemctl stop x-ui
-    systemctl disable x-ui
-    rm /etc/systemd/system/x-ui.service -f
+    systemctl stop y-ui
+    systemctl disable y-ui
+    rm /etc/systemd/system/y-ui.service -f
     systemctl daemon-reload
     systemctl reset-failed
-    rm /etc/x-ui/ -rf
-    rm /usr/local/x-ui/ -rf
+    rm /etc/y-ui/ -rf
+    rm /usr/local/y-ui/ -rf
 
     echo ""
-    echo -e "卸载成功，如果你想删除此脚本，则退出脚本后运行 ${green}rm /usr/bin/x-ui -f${plain} 进行删除"
+    echo -e "卸载成功，如果你想删除此脚本，则退出脚本后运行 ${green}rm /usr/bin/y-ui -f${plain} 进行删除"
     echo ""
 
     if [[ $# == 0 ]]; then
@@ -141,7 +141,7 @@ reset_user() {
         fi
         return 0
     fi
-    /usr/local/x-ui/x-ui setting -username admin -password admin
+    /usr/local/y-ui/y-ui setting -username admin -password admin
     echo -e "用户名和密码已重置为 ${green}admin${plain}，现在请重启面板"
     confirm_restart
 }
@@ -154,7 +154,7 @@ reset_config() {
         fi
         return 0
     fi
-    /usr/local/x-ui/x-ui setting -reset
+    /usr/local/y-ui/y-ui setting -reset
     echo -e "所有面板设置已重置为默认值，现在请重启面板，并使用默认的 ${green}54321${plain} 端口访问面板"
     confirm_restart
 }
@@ -165,7 +165,7 @@ set_port() {
         echo -e "${yellow}已取消${plain}"
         before_show_menu
     else
-        /usr/local/x-ui/x-ui setting -port ${port}
+        /usr/local/y-ui/y-ui setting -port ${port}
         echo -e "设置端口完毕，现在请重启面板，并使用新设置的端口 ${green}${port}${plain} 访问面板"
         confirm_restart
     fi
@@ -177,11 +177,11 @@ start() {
         echo ""
         echo -e "${green}面板已运行，无需再次启动，如需重启请选择重启${plain}"
     else
-        systemctl start x-ui
+        systemctl start y-ui
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            echo -e "${green}x-ui 启动成功${plain}"
+            echo -e "${green}y-ui 启动成功${plain}"
         else
             echo -e "${red}面板启动失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
         fi
@@ -198,11 +198,11 @@ stop() {
         echo ""
         echo -e "${green}面板已停止，无需再次停止${plain}"
     else
-        systemctl stop x-ui
+        systemctl stop y-ui
         sleep 2
         check_status
         if [[ $? == 1 ]]; then
-            echo -e "${green}x-ui 与 xray 停止成功${plain}"
+            echo -e "${green}y-ui 与 xray 停止成功${plain}"
         else
             echo -e "${red}面板停止失败，可能是因为停止时间超过了两秒，请稍后查看日志信息${plain}"
         fi
@@ -214,11 +214,11 @@ stop() {
 }
 
 restart() {
-    systemctl restart x-ui
+    systemctl restart y-ui
     sleep 2
     check_status
     if [[ $? == 0 ]]; then
-        echo -e "${green}x-ui 与 xray 重启成功${plain}"
+        echo -e "${green}y-ui 与 xray 重启成功${plain}"
     else
         echo -e "${red}面板重启失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
     fi
@@ -228,18 +228,18 @@ restart() {
 }
 
 status() {
-    systemctl status x-ui -l
+    systemctl status y-ui -l
     if [[ $# == 0 ]]; then
         before_show_menu
     fi
 }
 
 enable() {
-    systemctl enable x-ui
+    systemctl enable y-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}x-ui 设置开机自启成功${plain}"
+        echo -e "${green}y-ui 设置开机自启成功${plain}"
     else
-        echo -e "${red}x-ui 设置开机自启失败${plain}"
+        echo -e "${red}y-ui 设置开机自启失败${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -248,11 +248,11 @@ enable() {
 }
 
 disable() {
-    systemctl disable x-ui
+    systemctl disable y-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}x-ui 取消开机自启成功${plain}"
+        echo -e "${green}y-ui 取消开机自启成功${plain}"
     else
-        echo -e "${red}x-ui 取消开机自启失败${plain}"
+        echo -e "${red}y-ui 取消开机自启失败${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -261,14 +261,14 @@ disable() {
 }
 
 show_log() {
-    journalctl -u x-ui.service -e --no-pager -f
+    journalctl -u y-ui.service -e --no-pager -f
     if [[ $# == 0 ]]; then
         before_show_menu
     fi
 }
 
 migrate_v2_ui() {
-    /usr/local/x-ui/x-ui v2-ui
+    /usr/local/y-ui/y-ui v2-ui
 
     before_show_menu
 }
@@ -281,23 +281,23 @@ install_bbr() {
 }
 
 update_shell() {
-    wget -O /usr/bin/x-ui -N --no-check-certificate https://github.com/vaxilu/x-ui/raw/master/x-ui.sh
+    wget -O /usr/bin/y-ui -N --no-check-certificate https://github.com/treffen2010/y-ui/raw/master/y-ui.sh
     if [[ $? != 0 ]]; then
         echo ""
         echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
         before_show_menu
     else
-        chmod +x /usr/bin/x-ui
+        chmod +x /usr/bin/y-ui
         echo -e "${green}升级脚本成功，请重新运行脚本${plain}" && exit 0
     fi
 }
 
 # 0: running, 1: not running, 2: not installed
 check_status() {
-    if [[ ! -f /etc/systemd/system/x-ui.service ]]; then
+    if [[ ! -f /etc/systemd/system/y-ui.service ]]; then
         return 2
     fi
-    temp=$(systemctl status x-ui | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
+    temp=$(systemctl status y-ui | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
     if [[ x"${temp}" == x"running" ]]; then
         return 0
     else
@@ -306,7 +306,7 @@ check_status() {
 }
 
 check_enabled() {
-    temp=$(systemctl is-enabled x-ui)
+    temp=$(systemctl is-enabled y-ui)
     if [[ x"${temp}" == x"enabled" ]]; then
         return 0
     else
@@ -387,44 +387,44 @@ show_xray_status() {
 }
 
 show_usage() {
-    echo "x-ui 管理脚本使用方法: "
+    echo "y-ui 管理脚本使用方法: "
     echo "------------------------------------------"
-    echo "x-ui              - 显示管理菜单 (功能更多)"
-    echo "x-ui start        - 启动 x-ui 面板"
-    echo "x-ui stop         - 停止 x-ui 面板"
-    echo "x-ui restart      - 重启 x-ui 面板"
-    echo "x-ui status       - 查看 x-ui 状态"
-    echo "x-ui enable       - 设置 x-ui 开机自启"
-    echo "x-ui disable      - 取消 x-ui 开机自启"
-    echo "x-ui log          - 查看 x-ui 日志"
-    echo "x-ui v2-ui        - 迁移本机器的 v2-ui 账号数据至 x-ui"
-    echo "x-ui update       - 更新 x-ui 面板"
-    echo "x-ui install      - 安装 x-ui 面板"
-    echo "x-ui uninstall    - 卸载 x-ui 面板"
+    echo "y-ui              - 显示管理菜单 (功能更多)"
+    echo "y-ui start        - 启动 y-ui 面板"
+    echo "y-ui stop         - 停止 y-ui 面板"
+    echo "y-ui restart      - 重启 y-ui 面板"
+    echo "y-ui status       - 查看 y-ui 状态"
+    echo "y-ui enable       - 设置 y-ui 开机自启"
+    echo "y-ui disable      - 取消 y-ui 开机自启"
+    echo "y-ui log          - 查看 y-ui 日志"
+    echo "y-ui v2-ui        - 迁移本机器的 v2-ui 账号数据至 y-ui"
+    echo "y-ui update       - 更新 y-ui 面板"
+    echo "y-ui install      - 安装 y-ui 面板"
+    echo "y-ui uninstall    - 卸载 y-ui 面板"
     echo "------------------------------------------"
 }
 
 show_menu() {
     echo -e "
-  ${green}x-ui 面板管理脚本${plain}
+  ${green}y-ui 面板管理脚本${plain}
   ${green}0.${plain} 退出脚本
 ————————————————
-  ${green}1.${plain} 安装 x-ui
-  ${green}2.${plain} 更新 x-ui
-  ${green}3.${plain} 卸载 x-ui
+  ${green}1.${plain} 安装 y-ui
+  ${green}2.${plain} 更新 y-ui
+  ${green}3.${plain} 卸载 y-ui
 ————————————————
   ${green}4.${plain} 重置用户名密码
   ${green}5.${plain} 重置面板设置
   ${green}6.${plain} 设置面板端口
 ————————————————
-  ${green}7.${plain} 启动 x-ui
-  ${green}8.${plain} 停止 x-ui
-  ${green}9.${plain} 重启 x-ui
- ${green}10.${plain} 查看 x-ui 状态
- ${green}11.${plain} 查看 x-ui 日志
+  ${green}7.${plain} 启动 y-ui
+  ${green}8.${plain} 停止 y-ui
+  ${green}9.${plain} 重启 y-ui
+ ${green}10.${plain} 查看 y-ui 状态
+ ${green}11.${plain} 查看 y-ui 日志
 ————————————————
- ${green}12.${plain} 设置 x-ui 开机自启
- ${green}13.${plain} 取消 x-ui 开机自启
+ ${green}12.${plain} 设置 y-ui 开机自启
+ ${green}13.${plain} 取消 y-ui 开机自启
 ————————————————
  ${green}14.${plain} 一键安装 bbr (最新内核)
  "

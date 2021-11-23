@@ -26,7 +26,7 @@ func initUser() error {
 	if count == 0 {
 		user := &model.User{
 			Username: "admin",
-			Password: "123",
+			Password: "admin",
 		}
 		return db.Create(user).Error
 	}
@@ -44,7 +44,6 @@ func initSetting() error {
 func InitDB(dbPath string) error {
 	dir := path.Dir(dbPath)
 	err := os.MkdirAll(dir, fs.ModeDir)
-	print(err)
 	if err != nil {
 		return err
 	}
